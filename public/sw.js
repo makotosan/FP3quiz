@@ -1,5 +1,6 @@
-
-const CACHE_NAME = 'fp3-quiz-cache-v2';
+// IMPORTANT: Increment this version number when you deploy updates to the app.
+// This will trigger the service worker update process.
+const CACHE_NAME = 'fp3-quiz-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
