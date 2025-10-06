@@ -1,3 +1,4 @@
+
 // Fix: Import React to fix 'Cannot find namespace React' error for React.Dispatch type.
 import React from 'react';
 
@@ -38,16 +39,18 @@ export interface UserSettings {
   prioritize_wrong_questions: boolean;
 }
 
-export type AppState = {
+export interface AppState {
   history: UserLearningHistory;
   settings: UserSettings;
-};
+  isHelpModalOpen: boolean;
+}
 
 export type Action =
   | { type: 'ANSWER_QUESTION'; payload: { questionId: string; isCorrect: boolean; category: string } }
   | { type: 'UPDATE_SETTINGS'; payload: Partial<UserSettings> }
   | { type: 'ADD_STUDY_TIME'; payload: { minutes: number } }
-  | { type: 'TOGGLE_FAVORITE'; payload: { questionId: string } };
+  | { type: 'TOGGLE_FAVORITE'; payload: { questionId: string } }
+  | { type: 'TOGGLE_HELP_MODAL' };
 
 export interface AppContextType extends AppState {
   dispatch: React.Dispatch<Action>;

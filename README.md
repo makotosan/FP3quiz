@@ -1,20 +1,95 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# FP3級試験対策クイズ PWA
 
-# Run and deploy your AI Studio app
+## 概要
 
-This contains everything you need to run your app locally.
+このアプリケーションは、FP3級（ファイナンシャル・プランニング技能検定3級）試験の合格を目指す学習者向けのプログレッシブウェブアプリ（PWA）です。スマートフォンやPCからいつでもどこでもクイズ形式で学習でき、オフラインでも利用可能です。学習進捗の可視化や苦手問題の復習機能などを通じて、効率的な試験対策をサポートします。
 
-View your app in AI Studio: https://ai.studio/apps/drive/1Bf-iZZHJ7Iym43m4D2xz4WhfnyHakBMM
+## ✨ 主な機能
 
-## Run Locally
+*   **PWA対応**:
+    *   **ホーム画面に追加**: スマートフォンのホーム画面にアプリとして追加できます。
+    *   **オフライン動作**: Service Workerにより、一度アクセスすればオフライン環境でも学習を続けられます。
+    *   **高速ロード**: アプリケーションシェルをキャッシュすることで、素早い起動を実現します。
 
-**Prerequisites:**  Node.js
+*   **クイズ機能**:
+    *   **カテゴリ別出題**: 「ライフプランニング」「リスク管理」など、6つの分野から選んで学習できます。
+    *   **多彩な学習モード**:
+        *   `苦手問題`: 間違えた問題だけを集中して復習できます。
+        *   `お気に入り`: チェックした問題を後から見直せます。
+        *   `今日の学習`: ランダムなカテゴリからクイズを開始できます。
+    *   **即時フィードバック**: 解答後すぐに正解・不正解が分かり、詳しい解説を読むことができます。
 
+*   **学習ダッシュボード (ホーム画面)**:
+    *   **進捗の可視化**: 全体の正答率を円グラフで直感的に把握できます。
+    *   **学習サマリー**: 総解答数や総学習時間を表示します。
+    *   **分野別進捗**: 各分野の正答率をプログレスバーで確認できます。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+*   **詳細な学習履歴**:
+    *   **正答率の推移**: 過去30日間の正答率を折れ線グラフで確認し、成長を実感できます。
+    *   **学習時間の記録**: 過去7日間の学習時間を棒グラフで表示し、学習習慣をトラッキングします。
+
+*   **カスタマイズ可能な設定**:
+    *   **文字サイズ変更**: スライダーでアプリ全体の文字サイズを読みやすい大きさに調整できます。
+    *   **学習オプション**: 効果音のON/OFFや、間違えた問題の優先出題などを設定できます。
+
+## 🛠️ 技術スタック
+
+このアプリケーションは、モダンなWeb技術を組み合わせて構築されています。ビルドプロセスを必要としないCDNベースのシンプルな構成です。
+
+*   **フロントエンド**: [React](https://reactjs.org/)
+*   **ルーティング**: [React Router](https://reactrouter.com/)
+*   **状態管理**: React Context API + `useReducer`
+*   **スタイリング**: [Tailwind CSS](https://tailwindcss.com/) (CDN経由)
+*   **グラフ描画**: [Recharts](https://recharts.org/)
+*   **PWA**: Service Worker, Web App Manifest
+*   **データ永続化**: `localStorage` (カスタムフック `useLocalStorage` を使用)
+
+## 📁 プロジェクト構造
+
+```
+.
+├── public/
+│   ├── manifest.json       # PWA設定ファイル
+│   └── sw.js               # Service Worker スクリプト
+├── components/
+│   ├── charts/             # Rechartsを使ったグラフコンポーネント
+│   ├── BottomNav.tsx       # 下部ナビゲーション
+│   └── ProgressBar.tsx     # 進捗バー
+├── contexts/
+│   └── AppContext.tsx      # グローバルな状態管理
+├── data/
+│   └── questions.ts        # クイズの問題データ
+├── hooks/
+│   └── useLocalStorage.ts  # localStorageを扱うカスタムフック
+├── pages/
+│   ├── HomeScreen.tsx      # ホーム画面
+│   ├── CategoryScreen.tsx  # カテゴリ選択画面
+│   ├── QuizScreen.tsx      # クイズ画面
+│   ├── HistoryScreen.tsx   # 学習履歴画面
+│   └── SettingsScreen.tsx  # 設定画面
+├── App.tsx                 # アプリケーションのルートとルーティング設定
+├── index.html              # エントリーポイントとなるHTMLファイル
+├── index.tsx               # Reactアプリケーションのマウントポイント
+└── types.ts                # TypeScriptの型定義
+```
+
+## 🚀 実行方法
+
+このプロジェクトはビルドツール（WebpackやViteなど）を必要とせず、ローカルサーバーを立てるだけで簡単に実行できます。
+
+1.  プロジェクトファイルをダウンロードまたはクローンします。
+2.  プロジェクトのルートディレクトリで、ローカルウェブサーバーを起動します。
+    *   **VS Codeの場合**: [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) 拡張機能を使って `index.html` を開くのが簡単です。
+    *   **Pythonがインストールされている場合**:
+        ```bash
+        # Python 3
+        python -m http.server
+        ```
+    *   **Node.jsがインストールされている場合**:
+        ```bash
+        # serveパッケージをインストール
+        npm install -g serve
+        # サーバーを起動
+        serve .
+        ```
+3.  ブラウザで指定されたアドレス（例: `http://localhost:8000`）にアクセスします。

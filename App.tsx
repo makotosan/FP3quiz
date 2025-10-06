@@ -9,6 +9,7 @@ import QuizScreen from './pages/QuizScreen';
 import HistoryScreen from './pages/HistoryScreen';
 import SettingsScreen from './pages/SettingsScreen';
 import BottomNav from './components/BottomNav';
+import HelpModal from './components/HelpModal';
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             </Routes>
           </main>
           <BottomNav />
+          <HelpModal />
         </div>
       </HashRouter>
     </AppProvider>

@@ -7,7 +7,7 @@ import { Question } from '../types';
 const QuizScreen: React.FC = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
-  const { questions, dispatch, history, settings } = useAppContext();
+  const { questions, dispatch, history } = useAppContext();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -16,20 +16,25 @@ const QuizScreen: React.FC = () => {
 
   const quizQuestions = useMemo(() => {
     if (!category) return [];
+    
+    // Handle special categories
     if (category === '苦手問題') {
         return questions.filter(q => history.wrong_questions.includes(q.id));
     }
     if (category === 'お気に入り') {
         return questions.filter(q => history.favorites.includes(q.id));
     }
+    if (category === '過去問') {
+        // Placeholder for future implementation
+        return [];
+    }
+
+    // Handle standard categories: filter, shuffle, and take 5
     const filtered = questions.filter(q => q.category === category);
-    return settings.prioritize_wrong_questions
-      ? [
-          ...filtered.filter(q => history.wrong_questions.includes(q.id)),
-          ...filtered.filter(q => !history.wrong_questions.includes(q.id)),
-        ]
-      : filtered;
-  }, [category, questions, history.wrong_questions, history.favorites, settings.prioritize_wrong_questions]);
+    const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 5);
+
+  }, [category, questions, history.wrong_questions, history.favorites]);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
 
@@ -83,7 +88,7 @@ const QuizScreen: React.FC = () => {
     return 'bg-white';
   };
   
-  if (quizQuestions.length === 0) {
+  if (!currentQuestion) {
     return (
       <div className="flex flex-col items-center justify-center h-screen p-4 text-center">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">

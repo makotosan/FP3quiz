@@ -87,6 +87,9 @@ const appReducer = (state: AppState, action: Action): AppState => {
       }
       return { ...state, history: newHistory };
     }
+
+    case 'TOGGLE_HELP_MODAL':
+        return { ...state, isHelpModalOpen: !state.isHelpModalOpen };
     
     default:
       return state;
@@ -100,6 +103,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const initialState: AppState = {
     history: persistedHistory,
     settings: persistedSettings,
+    isHelpModalOpen: false,
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
