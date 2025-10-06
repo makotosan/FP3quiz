@@ -6,29 +6,29 @@ import { UserSettings } from '../types';
 const SettingsScreen: React.FC = () => {
   const { settings, dispatch, isUpdateAvailable, updateApp } = useAppContext();
 
-  const handleSettingChange = (key: keyof UserSettings, value: boolean | number) => {
+  const handleSettingChange = (key: keyof UserSettings, value: boolean | number | string) => {
     dispatch({ type: 'UPDATE_SETTINGS', payload: { [key]: value } });
   };
   
   const ToggleSwitch: React.FC<{ checked: boolean; onChange: (checked: boolean) => void; label: string }> = ({ checked, onChange, label }) => (
     <label className="flex items-center justify-between cursor-pointer">
-      <span className="text-gray-700">{label}</span>
+      <span className="text-gray-700 dark:text-gray-200">{label}</span>
       <div className="relative">
         <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-        <div className="block bg-gray-200 w-14 h-8 rounded-full"></div>
-        <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${checked ? 'transform translate-x-6 bg-indigo-600' : ''}`}></div>
+        <div className={`block w-14 h-8 rounded-full transition-colors ${checked ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-600'}`}></div>
+        <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform dark:bg-slate-300 ${checked ? 'transform translate-x-6' : ''}`}></div>
       </div>
     </label>
   );
 
   return (
     <div className="p-4 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">設定</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">設定</h1>
 
-      <div className="bg-white p-4 rounded-lg shadow space-y-4">
-        <h2 className="text-lg font-semibold text-gray-700">表示設定</h2>
+      <div className="bg-white p-4 rounded-lg shadow space-y-4 dark:bg-slate-800">
+        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">表示設定</h2>
         <div>
-          <label htmlFor="font-size" className="block mb-2 text-sm font-medium text-gray-900">
+          <label htmlFor="font-size" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
             文字サイズ ({Math.round(settings.font_size_scale * 100)}%)
           </label>
           <input
@@ -39,13 +39,20 @@ const SettingsScreen: React.FC = () => {
             step="0.1"
             value={settings.font_size_scale}
             onChange={(e) => handleSettingChange('font_size_scale', parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
           />
+        </div>
+        <div className="pt-4 border-t border-gray-200 dark:border-slate-700">
+            <ToggleSwitch
+                label="ダークモード"
+                checked={settings.theme === 'dark'}
+                onChange={(val) => handleSettingChange('theme', val ? 'dark' : 'light')}
+            />
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow space-y-4 divide-y">
-        <h2 className="text-lg font-semibold text-gray-700 pb-2">学習設定</h2>
+      <div className="bg-white p-4 rounded-lg shadow space-y-4 divide-y dark:bg-slate-800 dark:divide-slate-700">
+        <h2 className="text-lg font-semibold text-gray-700 pb-2 dark:text-gray-200">学習設定</h2>
         <div className="pt-4">
           <ToggleSwitch 
             label="効果音"
@@ -69,8 +76,8 @@ const SettingsScreen: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow space-y-4">
-        <h2 className="text-lg font-semibold text-gray-700">アプリケーション情報</h2>
+      <div className="bg-white p-4 rounded-lg shadow space-y-4 dark:bg-slate-800">
+        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">アプリケーション情報</h2>
         {isUpdateAvailable && (
           <button
             onClick={updateApp}
@@ -81,9 +88,9 @@ const SettingsScreen: React.FC = () => {
             <span>新しいバージョンに更新</span>
           </button>
         )}
-        <div className="pt-2 text-center text-sm text-gray-500 space-y-2">
+        <div className="pt-2 text-center text-sm text-gray-500 space-y-2 dark:text-gray-400">
           <p>
-            <a href="#" className="underline">利用規約</a> | <a href="#" className="underline">プライバシーポリシー</a>
+            <a href="#" className="underline hover:text-indigo-500 dark:hover:text-indigo-400">利用規約</a> | <a href="#" className="underline hover:text-indigo-500 dark:hover:text-indigo-400">プライバシーポリシー</a>
           </p>
           <p>バージョン 1.0.1</p>
         </div>

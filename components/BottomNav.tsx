@@ -13,15 +13,15 @@ const navItems = [
 
 const BottomNav: React.FC = () => {
   const { dispatch } = useAppContext();
-  const activeLink = 'text-indigo-600';
-  const inactiveLink = 'text-gray-500 hover:text-indigo-600';
+  const activeLink = 'text-indigo-600 dark:text-indigo-400';
+  const inactiveLink = 'text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400';
 
   const handleHelpClick = () => {
     dispatch({ type: 'TOGGLE_HELP_MODAL' });
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_5px_rgba(0,0,0,0.1)] z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_5px_rgba(0,0,0,0.1)] z-50 dark:bg-slate-800 dark:shadow-[0_-2px_5px_rgba(0,0,0,0.3)]">
       <div className="flex justify-around max-w-lg mx-auto">
         {navItems.map((item) => (
           <NavLink

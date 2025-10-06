@@ -37,6 +37,7 @@ export interface UserSettings {
   sound_effects_enabled: boolean;
   time_limit_mode_enabled: boolean;
   prioritize_wrong_questions: boolean;
+  theme: 'light' | 'dark';
 }
 
 export interface AppState {

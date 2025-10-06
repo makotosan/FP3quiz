@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useAppContext } from '../../contexts/AppContext';
 
 interface ProgressPieChartProps {
   correct: number;
@@ -8,6 +9,9 @@ interface ProgressPieChartProps {
 }
 
 const ProgressPieChart: React.FC<ProgressPieChartProps> = ({ correct, total }) => {
+  const { settings } = useAppContext();
+  const isDarkMode = settings.theme === 'dark';
+
   const incorrect = total - correct;
   const data = [
     { name: '正解', value: correct },
@@ -41,12 +45,18 @@ const ProgressPieChart: React.FC<ProgressPieChartProps> = ({ correct, total }) =
               <Cell key={`cell-${index}`} fill={color} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip 
+            contentStyle={{
+                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                borderColor: isDarkMode ? '#374151' : '#e5e7eb'
+            }}
+            labelStyle={{ color: isDarkMode ? '#f3f4f6' : '#1f2937' }}
+          />
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-sm text-gray-500">正答率</span>
-        <span className="text-3xl font-bold text-gray-800">{percentage}%</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">正答率</span>
+        <span className="text-3xl font-bold text-gray-800 dark:text-gray-100">{percentage}%</span>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React, { createContext, useReducer, useContext, useEffect, ReactNode, useState } from 'react';
 import { AppState, Action, UserLearningHistory, UserSettings, AppContextType, Question } from '../types';
 import { questions as allQuestions } from '../data/questions';
@@ -24,6 +23,7 @@ const initialSettings: UserSettings = {
   sound_effects_enabled: true,
   time_limit_mode_enabled: false,
   prioritize_wrong_questions: true,
+  theme: 'light',
 };
 
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -101,7 +101,14 @@ const appReducer = (state: AppState, action: Action): AppState => {
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [persistedHistory, setPersistedHistory] = useLocalStorage<UserLearningHistory>('fp3_history', initialHistory);
-  const [persistedSettings, setPersistedSettings] = useLocalStorage<UserSettings>('fp3_settings', initialSettings);
+  
+  // Fix: Add explicit return type 'UserSettings' to ensure type correctness.
+  const getInitialSettings = (): UserSettings => {
+    const systemTheme = (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    return { ...initialSettings, theme: systemTheme };
+  };
+  
+  const [persistedSettings, setPersistedSettings] = useLocalStorage<UserSettings>('fp3_settings', getInitialSettings());
   
   const initialState: AppState = {
     history: persistedHistory,
@@ -164,6 +171,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     document.documentElement.style.fontSize = `${16 * state.settings.font_size_scale}px`;
   }, [state.settings.font_size_scale]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (state.settings.theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [state.settings.theme]);
 
   const value = {
     ...state,
