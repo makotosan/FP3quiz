@@ -3,6 +3,7 @@ import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './contexts/AppContext';
 
+import Header from './components/Header';
 import HomeScreen from './pages/HomeScreen';
 import CategoryScreen from './pages/CategoryScreen';
 import QuizScreen from './pages/QuizScreen';
@@ -16,7 +17,8 @@ const App: React.FC = () => {
     <AppProvider>
       <HashRouter>
         <div className="min-h-screen flex flex-col font-sans">
-          <main className="flex-grow pb-20">
+          <Header />
+          <main className="flex-grow pt-16 pb-20">
             <Routes>
               <Route path="/" element={<HomeScreen />} />
               <Route path="/categories" element={<CategoryScreen />} />
