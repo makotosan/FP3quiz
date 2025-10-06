@@ -4,7 +4,7 @@ import { useAppContext } from '../contexts/AppContext';
 import { UserSettings } from '../types';
 
 const SettingsScreen: React.FC = () => {
-  const { settings, dispatch } = useAppContext();
+  const { settings, dispatch, isUpdateAvailable, updateApp } = useAppContext();
 
   const handleSettingChange = (key: keyof UserSettings, value: boolean | number) => {
     dispatch({ type: 'UPDATE_SETTINGS', payload: { [key]: value } });
@@ -69,11 +69,24 @@ const SettingsScreen: React.FC = () => {
         </div>
       </div>
 
-      <div className="text-center text-sm text-gray-500 space-y-2">
-        <p>
-          <a href="#" className="underline">利用規約</a> | <a href="#" className="underline">プライバシーポリシー</a>
-        </p>
-        <p>バージョン 1.0.0</p>
+      <div className="bg-white p-4 rounded-lg shadow space-y-4">
+        <h2 className="text-lg font-semibold text-gray-700">アプリケーション情報</h2>
+        {isUpdateAvailable && (
+          <button
+            onClick={updateApp}
+            className="w-full bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-600 transition-colors duration-300 flex items-center justify-center space-x-2"
+            aria-label="新しいバージョンに更新"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>新しいバージョンに更新</span>
+          </button>
+        )}
+        <div className="pt-2 text-center text-sm text-gray-500 space-y-2">
+          <p>
+            <a href="#" className="underline">利用規約</a> | <a href="#" className="underline">プライバシーポリシー</a>
+          </p>
+          <p>バージョン 1.0.1</p>
+        </div>
       </div>
     </div>
   );

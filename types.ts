@@ -43,6 +43,7 @@ export interface AppState {
   history: UserLearningHistory;
   settings: UserSettings;
   isHelpModalOpen: boolean;
+  isUpdateAvailable: boolean;
 }
 
 export type Action =
@@ -50,10 +51,12 @@ export type Action =
   | { type: 'UPDATE_SETTINGS'; payload: Partial<UserSettings> }
   | { type: 'ADD_STUDY_TIME'; payload: { minutes: number } }
   | { type: 'TOGGLE_FAVORITE'; payload: { questionId: string } }
-  | { type: 'TOGGLE_HELP_MODAL' };
+  | { type: 'TOGGLE_HELP_MODAL' }
+  | { type: 'SET_UPDATE_AVAILABLE', payload: boolean };
 
 export interface AppContextType extends AppState {
   dispatch: React.Dispatch<Action>;
   questions: Question[];
   categories: string[];
+  updateApp: () => void;
 }

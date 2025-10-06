@@ -1,5 +1,5 @@
 
-import React, { createContext, useReducer, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useReducer, useContext, useEffect, ReactNode, useState } from 'react';
 import { AppState, Action, UserLearningHistory, UserSettings, AppContextType, Question } from '../types';
 import { questions as allQuestions } from '../data/questions';
 import { CATEGORIES } from '../constants';
@@ -91,6 +91,9 @@ const appReducer = (state: AppState, action: Action): AppState => {
     case 'TOGGLE_HELP_MODAL':
         return { ...state, isHelpModalOpen: !state.isHelpModalOpen };
     
+    case 'SET_UPDATE_AVAILABLE':
+      return { ...state, isUpdateAvailable: action.payload };
+
     default:
       return state;
   }
@@ -104,9 +107,51 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     history: persistedHistory,
     settings: persistedSettings,
     isHelpModalOpen: false,
+    isUpdateAvailable: false,
   };
 
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Service Worker Update Handling
+  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+  
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          if (installingWorker) {
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed') {
+                if (reg.waiting) {
+                  console.log('New content is available and waiting to be installed!');
+                  setWaitingWorker(reg.waiting);
+                  dispatch({ type: 'SET_UPDATE_AVAILABLE', payload: true });
+                }
+              }
+            };
+          }
+        };
+      }).catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+      
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+            window.location.reload();
+            refreshing = true;
+        }
+      });
+    }
+  }, []);
+
+  const updateApp = () => {
+    if (waitingWorker) {
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    }
+  };
+
 
   useEffect(() => {
     setPersistedHistory(state.history);
@@ -125,6 +170,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     dispatch,
     questions: allQuestions,
     categories: CATEGORIES,
+    updateApp,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
